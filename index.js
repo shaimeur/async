@@ -23,12 +23,22 @@ const getDogPic = async () => {
   try {
     const data = await readFilePro(`${__dirname}/dog.txt`);
     console.log(`Breed ${data}`);
-
-    const res = await superagent.get(
+    // let create more promise here and return a promise not a resolved one that why we need to remove the await keyword!!
+    const resPro1 = superagent.get(
       `https://dog.ceo/api/breed/${data}/images/random`
     );
-    console.log(res.body.message);
-    await wreiteFilePro(`${__dirname}/dog-image.txt`, res.body.message);
+    const resPro2 = superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    const resPro3 = superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    const allPros = await Promise.all([resPro1, resPro2, resPro3]);
+    // console.log('ALL=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><', allPros);
+    const imgs = allPros.map((img) => img.body.message);
+    // console.log('=================+++++>', imgs);
+    // console.log(res.body.message);
+    await wreiteFilePro(`${__dirname}/dog-image.txt`, imgs.join('\n'));
     console.log('Random dog images saved to file ');
   } catch (error) {
     console.log(error);
