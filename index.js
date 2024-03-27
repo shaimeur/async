@@ -1,20 +1,36 @@
 const fs = require('fs');
 const superagent = require('superagent');
 
-fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
-  console.log(`Breed ${data}`);
-
-  superagent
-    .get(`https://dog.ceo/api/breed/${data}/images/random`)
-    .then((res) => {
-      let result = res.body.message;
-
-      fs.writeFile(`${__dirname}/dog-image.txt`, result, (err) => {
-        if (err) return console.log(err.message);
-        console.log('message writenn succefully!!');
-      });
-    })
-    .catch((err) => {
-      console.log('this is an error!!=>', err.message);
+const readFilePro = (path) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, data) => {
+      if (err) reject('I could not find that file');
+      resolve(data);
     });
-});
+  });
+};
+
+const wreiteFilePro = (path, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, data, (err) => {
+      if (err) reject('could not write file');
+      resolve('success');
+    });
+  });
+};
+
+readFilePro(`${__dirname}/dog.txt`)
+  .then((data) => {
+    // console.log(`Breed ${data}`);
+
+    return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
+  })
+  .then((res) => {
+    // console.log(res.body);
+    let result = res.body.message;
+    return wreiteFilePro(`${__dirname}/dog-image.txt`, result);
+  })
+  .then(() => {
+    console.log('Random dog images saved to file ');
+  })
+  .catch((err) => console.log(err));
