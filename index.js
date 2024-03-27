@@ -19,6 +19,24 @@ const wreiteFilePro = (path, data) => {
   });
 };
 
+const getDogPic = async () => {
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    console.log(res.body.message);
+    await wreiteFilePro(`${__dirname}/dog-image.txt`, res.body.message);
+    console.log('Random dog images saved to file ');
+  } catch (error) {
+    console.log(error);
+  }
+};
+getDogPic();
+/*
+consuming the Promise with the then && catch hundler :
 readFilePro(`${__dirname}/dog.txt`)
   .then((data) => {
     // console.log(`Breed ${data}`);
@@ -34,3 +52,4 @@ readFilePro(`${__dirname}/dog.txt`)
     console.log('Random dog images saved to file ');
   })
   .catch((err) => console.log(err));
+*/
