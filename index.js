@@ -32,9 +32,22 @@ const getDogPic = async () => {
     console.log('Random dog images saved to file ');
   } catch (error) {
     console.log(error);
+    throw err;
   }
+  return ' 2 :Dogs pics arrived!!';
 };
-getDogPic();
+
+(async () => {
+  try {
+    console.log('1: will get dogpics');
+    const x = await getDogPic();
+    console.log(x);
+    console.log('3: done');
+  } catch (error) {
+    console.log('woooow  error occure!!');
+  }
+})();
+
 /*
 consuming the Promise with the then && catch hundler :
 readFilePro(`${__dirname}/dog.txt`)
